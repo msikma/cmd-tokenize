@@ -55,6 +55,7 @@ For both these functions, the following options can be passed in an object as th
 |:-----|:-----|:--------|:------------|
 | unpackCombinedOptions | boolean | true | Transforms combined options into individual options; an argument like `-asdf` becomes `-a`, `-s`, `-d`, `-f` |
 | preserveQuotes | boolean | false | Causes quotation marks around arguments to be preserved exactly |
+| useOptionsTerminator | boolean | true | Whether to look for the `--` terminator, which causes subsequent arguments to be treated verbatim |
 
 In standard argument parsers, multiple short options such as `-a` may be combined into a single token; if this is not desirable, the `unpackCombinedOptions` should be set to true. This is useful if your parser does not distinguish between short and long options (one notable example is `ffmpeg`, which uses a single dash for both short and long options).
 
