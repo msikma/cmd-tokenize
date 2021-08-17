@@ -2,7 +2,7 @@
 
 A small dependency-free library for converting terminal command strings into a format that's easy to process.
 
-This is not a complete argument parsing library; for that, see [Argon](https://github.com/msikma/argon), for which this library was written. The purpose of this library is to split up the user's command into separate distinct tokens.
+This is not a complete argument parsing library; for that, see [Argon](https://github.com/msikma/argon), for which this library was written. The purpose of this library is to split up terminal commands into separate distinct tokens that can then be processed further.
 
 ## Usage
 
@@ -43,7 +43,7 @@ console.log(parsed)
 //     ...
 ```
 
-Arguments are split by whitespace, with quoted sections remaining preserved. Nested quotes will remain intact. Both Unix and Windows style delimiters (dash and backslash) are supported.
+Arguments are split by whitespace, with quoted sections remaining preserved. Both Unix and Windows style delimiters (dash and backslash) are supported.
 
 If you want to process the arguments manually and just need them split up, you can do so using `splitCommand()`.
 
@@ -56,6 +56,7 @@ For both these functions, the following options can be passed in an object as th
 | unpackCombinedOptions | boolean | true | Transforms combined options into individual options; an argument like `-asdf` becomes `-a`, `-s`, `-d`, `-f` |
 | preserveQuotes | boolean | false | Causes quotation marks around arguments to be preserved exactly |
 | useOptionsTerminator | boolean | true | Whether to look for the `--` terminator, which causes subsequent arguments to be treated verbatim |
+| throwOnUnbalancedQuote | boolean | true | Throws an error when unbalanced quotes are encounted, e.g. `"some argument` |
 
 In standard argument parsers, multiple short options such as `-a` may be combined into a single token; if this is not desirable, the `unpackCombinedOptions` should be set to true. This is useful if your parser does not distinguish between short and long options (one notable example is `ffmpeg`, which uses a single dash for both short and long options).
 
@@ -83,9 +84,9 @@ The `value` string will be stripped of whitespace *except if the argument was qu
 program  --hello  " world "
 ```
 
-the `value` strings will be `['my_program', '--hello', ' world ']`. This is done under the assumption that, if something is quoted, its whitespace might be meaningful.
+the `value` strings will be `['my_program', '--hello', ' world ']`. This is done under the assumption that, if something is quoted, its whitespace must be meaningful.
 
-Nested quotes are handled correctly up to arbitrary depth, with the important detail that the quotation depth (the number of escape backslashes before a quote) is reduced by 1. This is because, as the items are being split up from a string into an array, we no longer need the first layer: `argument` and `"argument with spaces"` become `['argument', 'argument with spaces']`. If the quotation marks need to be preserved, set the `preserveQuotes` option to true.
+Nested quotes are handled correctly up to arbitrary depth, with the important detail that the quotation depth (the number of escape backslashes before a quote) is reduced by one. This is because, as the items are being split up from a string into an array, we no longer need the first layer: `argument` and `"argument with spaces"` become `['argument', 'argument with spaces']`. If the quotation marks need to be preserved, set the `preserveQuotes` option to true.
 
 ## License
 
