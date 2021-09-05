@@ -32,6 +32,7 @@ console.log(parsed)
 //       prefix: null,
 //       prefixType: null,
 //       suffix: null,
+//       isExecutable: true,
 //       isOption: false,
 //       isLongOption: false,
 //       isPaired: false,
@@ -53,6 +54,7 @@ For both these functions, the following options can be passed in an object as th
 
 | Name | Type | Default | Description |
 |:-----|:-----|:--------|:------------|
+| firstIsExec | boolean | true | Treats the first item as the path to the executable |
 | preserveQuotes | boolean | false | Causes quotation marks around arguments to be preserved exactly |
 | throwOnUnbalancedQuote | boolean | true | Throws an error when unbalanced quotes are encounted, e.g. `"some argument` |
 | unpackCombinedOptions | boolean | true | Transforms combined options into individual options; an argument like `-asdf` becomes `-a`, `-s`, `-d`, `-f` |
@@ -62,6 +64,8 @@ For both these functions, the following options can be passed in an object as th
 In standard argument parsers, multiple short options such as `-a` may be combined into a single token; if this is not desirable, the `unpackCombinedOptions` should be set to true. This is useful if your parser does not distinguish between short and long options (one notable example is `ffmpeg`, which uses a single dash for both short and long options).
 
 The `useWindowsDelimiters` option should be set to true when writing a parser for commands with Windows style slash arguments, such as `program.exe /a /b /c`. These are fundamentally incompatible with Unix style paths, which are now being used on Windows as well (per the introduction of the [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)), so it's recommended that you *always* use Unix style arguments regardless of what platform you're writing for. Note that, if you do parse Windows style slash arguments, you should also set `useOptionsTerminator` to false as this is not a convention used on Windows.
+
+The `firstIsExec` option ensures that the first item is parsed correctly if it's the name of the executable (e.g. the `ls` in `ls -lah`); technically an executable file can be named `--something`, which should not be parsed as an argument if it is the executable name. If you're *only* parsing arguments without an executable name, use `parseArguments()` instead of `parseCommand()`.
 
 ### Argument metadata
 
@@ -73,9 +77,10 @@ After parsing, each argument will have the following metadata:
 | prefix | string&nbsp;\|&nbsp;null | Prefix delimiter, if present; `"--"` for `--foo` |
 | prefixType | string&nbsp;\|&nbsp;null | Either `"unix"` or `"windows"` depending on whether the delimiter was a `-` dash or `/` slash |
 | suffix | string&nbsp;\|&nbsp;null | Suffix delimiter, if present; `"="` for `--foo="bar"` |
+| isExecutable | boolean | Whether this argument is the executable (the first item); true for `mkdir` in the command `mkdir -p /some/path`, false for the rest of the items |
 | isOption | boolean | Whether this argument is an option; true for `-f` or `--foo`, false for `foo` |
 | isLongOption | boolean | Whether this argument's option is a double hyphens; false for `-f`, true for `--foo` |
-| isPaired | boolean | Whether this argument pairs with the next argument as its value; for `--foo="bar"`, the `foo` object pairs with the `bar` object that comes directly after it. |
+| isPaired | boolean | Whether this argument pairs with the next argument as its value; for `--foo="bar"`, the `foo` item pairs with the `bar` item that comes directly after it |
 | isTerminator | boolean | Whether this is the `"--"` terminator argument—[see the syntax conventions section on Argon's readme page](https://github.com/msikma/argon#syntax-conventions) |
 | isUnpacked | boolean | Whether this argument is a split up combination argument; an argument like `-asdf` becomes `-a`, `-s`, `-d`, `-f` |
 | afterTerminator | boolean | Whether this argument came after the terminator |
