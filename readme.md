@@ -61,7 +61,7 @@ For both these functions, the following options can be passed in an object as th
 
 In standard argument parsers, multiple short options such as `-a` may be combined into a single token; if this is not desirable, the `unpackCombinedOptions` should be set to true. This is useful if your parser does not distinguish between short and long options (one notable example is `ffmpeg`, which uses a single dash for both short and long options).
 
-The `useWindowsDelimiters` option should be set to true when writing a parser for commands with Windows style slash arguments, such as `program.exe /a /b /c`. These are fundamentally incompatible with Unix style paths, which are now being used on Windows as well (per the introduction of the [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)), so it's recommended that you *always* use Unix style arguments regardless of what platform you're writing for.
+The `useWindowsDelimiters` option should be set to true when writing a parser for commands with Windows style slash arguments, such as `program.exe /a /b /c`. These are fundamentally incompatible with Unix style paths, which are now being used on Windows as well (per the introduction of the [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)), so it's recommended that you *always* use Unix style arguments regardless of what platform you're writing for. Note that, if you do parse Windows style slash arguments, you should also set `useOptionsTerminator` to false as this is not a convention used on Windows.
 
 ### Argument metadata
 
