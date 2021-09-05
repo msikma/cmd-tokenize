@@ -43,7 +43,7 @@ console.log(parsed)
 //     ...
 ```
 
-Arguments are split by whitespace, with quoted sections remaining preserved. Both Unix and Windows style delimiters (dash and backslash) are supported.
+Arguments are split by whitespace, with quoted sections remaining preserved. Both Unix and Windows style delimiters (dash and slash) are supported.
 
 If you want to process the arguments manually and just need them split up, you can do so using `splitCommand()`.
 
@@ -53,12 +53,15 @@ For both these functions, the following options can be passed in an object as th
 
 | Name | Type | Default | Description |
 |:-----|:-----|:--------|:------------|
-| unpackCombinedOptions | boolean | true | Transforms combined options into individual options; an argument like `-asdf` becomes `-a`, `-s`, `-d`, `-f` |
 | preserveQuotes | boolean | false | Causes quotation marks around arguments to be preserved exactly |
-| useOptionsTerminator | boolean | true | Whether to look for the `--` terminator, which causes subsequent arguments to be treated verbatim |
 | throwOnUnbalancedQuote | boolean | true | Throws an error when unbalanced quotes are encounted, e.g. `"some argument` |
+| unpackCombinedOptions | boolean | true | Transforms combined options into individual options; an argument like `-asdf` becomes `-a`, `-s`, `-d`, `-f` |
+| useOptionsTerminator | boolean | true | Whether to look for the `--` terminator, which causes subsequent arguments to be treated verbatim |
+| useWindowsDelimiters | boolean | false | Searches for Windows style slash delimiters rather than Unix style dash delimiters (never recommended even on Windows) |
 
 In standard argument parsers, multiple short options such as `-a` may be combined into a single token; if this is not desirable, the `unpackCombinedOptions` should be set to true. This is useful if your parser does not distinguish between short and long options (one notable example is `ffmpeg`, which uses a single dash for both short and long options).
+
+The `useWindowsDelimiters` option should be set to true when writing a parser for commands with Windows style slash arguments, such as `program.exe /a /b /c`. These are fundamentally incompatible with Unix style paths, which are now being used on Windows as well (per the introduction of the [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)), so it's recommended that you *always* use Unix style arguments regardless of what platform you're writing for.
 
 ### Argument metadata
 
@@ -68,7 +71,7 @@ After parsing, each argument will have the following metadata:
 |:-----|:-----|:------------|
 | value | string | String content of the argument with all delimiters stripped; `"foo"` for `--foo` |
 | prefix | string&nbsp;\|&nbsp;null | Prefix delimiter, if present; `"--"` for `--foo` |
-| prefixType | string&nbsp;\|&nbsp;null | Either `"unix"` or `"windows"` depending on whether the delimiter was a dash or backslash |
+| prefixType | string&nbsp;\|&nbsp;null | Either `"unix"` or `"windows"` depending on whether the delimiter was a `-` dash or `/` slash |
 | suffix | string&nbsp;\|&nbsp;null | Suffix delimiter, if present; `"="` for `--foo="bar"` |
 | isOption | boolean | Whether this argument is an option; true for `-f` or `--foo`, false for `foo` |
 | isLongOption | boolean | Whether this argument's option is a double hyphens; false for `-f`, true for `--foo` |
