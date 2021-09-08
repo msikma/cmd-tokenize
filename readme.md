@@ -1,3 +1,5 @@
+[![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT) [![npm version](https://badge.fury.io/js/cmd-tokenize.svg)](https://badge.fury.io/js/cmd-tokenize)
+
 # cmd-tokenize
 
 A small dependency-free library for converting terminal command strings into a format that's easy to process.
