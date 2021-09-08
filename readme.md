@@ -57,11 +57,11 @@ For both these functions, the following options can be passed in an object as th
 | firstIsExec | boolean | true | Treats the first item as the path to the executable |
 | preserveQuotes | boolean | false | Causes quotation marks around arguments to be preserved exactly |
 | throwOnUnbalancedQuote | boolean | true | Throws an error when unbalanced quotes are encounted, e.g. `"some argument` |
-| unpackCombinedOptions | boolean | true | Transforms combined options into individual options; an argument like `-asdf` becomes `-a`, `-s`, `-d`, `-f` |
+| unpackCombinedOptions | boolean | false | Breaks up combined options into individual options; an argument like `-asdf` becomes `-a`, `-s`, `-d`, `-f` |
 | useOptionsTerminator | boolean | true | Whether to look for the `--` terminator, which causes subsequent arguments to be treated verbatim |
 | useWindowsDelimiters | boolean | false | Searches for Windows style slash delimiters rather than Unix style dash delimiters (never recommended even on Windows) |
 
-In standard argument parsers, multiple short options such as `-a` may be combined into a single token; if this is not desirable, the `unpackCombinedOptions` should be set to true. This is useful if your parser does not distinguish between short and long options (one notable example is `ffmpeg`, which uses a single dash for both short and long options).
+In standard argument parsers, multiple short options such as `-a` may be combined into a single token, like `ls -lah` being equivalent to `ls -l -a -h`; these can be broken up for easier processing by setting `unpackCombinedOptions` to true. Conversely, if your parser does not distinguish between short and long options (one notable example being `ffmpeg`, which uses a single dash for both short and long options) you should leave it at its default of false.
 
 The `useWindowsDelimiters` option should be set to true when writing a parser for commands with Windows style slash arguments, such as `program.exe /a /b /c`. These are fundamentally incompatible with Unix style paths, which are now being used on Windows as well (per the introduction of the [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)), so it's recommended that you *always* use Unix style arguments regardless of what platform you're writing for. Note that, if you do parse Windows style slash arguments, you should also set `useOptionsTerminator` to false as this is not a convention used on Windows.
 
