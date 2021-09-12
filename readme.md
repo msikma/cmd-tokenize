@@ -25,30 +25,46 @@ const parsed = parseCommand(cmd)
 
 console.log(parsed)
 
+// Logs the following:
+//
 // {
-//   input: 'program arg --another-arg -z -asdf --with-value="value" -- --after-terminator',
-//   inputSplit: ['program', 'arg', '--another-arg', '-z', '-a', '-s', '-d', '-f', '--with-value=', 'value', '--', '--after-terminator'],
+//   command: 'program arg --another-arg -z -asdf --with-value="value" -- --after-terminator',
+//   commandSplit: ['program', 'arg', '--another-arg', '-z', '-asdf', '--with-value=value', '--', '--after-terminator'],
 //   arguments: [
 //     {
 //       value: 'program',
-//       prefix: null,
-//       prefixType: null,
 //       suffix: null,
+//       prefix: null,
+//       isAfterTerminator: false,
 //       isExecutable: true,
-//       isOption: false,
 //       isLongOption: false,
+//       isOption: false,
 //       isPaired: false,
 //       isTerminator: false,
-//       afterTerminator: false,
-//       originalValue: 'program',
-//       isUnpacked: false
+//       isUnpacked: false,
+//       originalValue: 'program'
 //     },
 //     ...
 ```
 
 Arguments are split by whitespace, with quoted sections remaining preserved. Both Unix and Windows style delimiters (dash and slash) are supported.
 
-If you want to process the arguments manually and just need them split up, you can do so using `splitCommand()`.
+Alternatively, there's `splitCommand()` which only splits the input into distinct arguments without doing any further processing.
+
+```js
+const { splitCommand } = require('cmd-tokenize')
+
+const cmd = `program arg "quoted arg" --arg='quoted arg' "nested \\"quote\\"" -abc`
+const parsed = splitCommand(cmd)
+
+console.log(parsed)
+
+// Logs the following:
+//
+// ['program', 'arg', 'quoted arg', '--arg=quoted arg', 'nested "quote"', '-abc']
+```
+
+This function does not automatically parse options like `-abc` or `--argument="value"`. The result of this function can be used to spawn a child process.
 
 ### Options
 
@@ -58,8 +74,7 @@ For both these functions, the following options can be passed in an object as th
 |:-----|:-----|:--------|:------------|
 | firstIsExec | boolean | true | Treats the first item as the path to the executable |
 | preserveQuotes | boolean | false | Causes quotation marks around arguments to be preserved exactly |
-| throwOnUnbalancedQuote | boolean | true | Throws an error when unbalanced quotes are encounted, e.g. `"some argument` |
-| unpackCombinedOptions | boolean | false | Breaks up combined options into individual options; an argument like `-asdf` becomes `-a`, `-s`, `-d`, `-f` |
+| unpackCombinedOptions | boolean | true | Breaks up combined options into individual options; an argument like `-asdf` becomes `-a`, `-s`, `-d`, `-f` |
 | useOptionsTerminator | boolean | true | Whether to look for the `--` terminator, which causes subsequent arguments to be treated verbatim |
 | useWindowsDelimiters | boolean | false | Searches for Windows style slash delimiters rather than Unix style dash delimiters (never recommended even on Windows) |
 
@@ -76,16 +91,15 @@ After parsing, each argument will have the following metadata:
 | Name | Type | Description |
 |:-----|:-----|:------------|
 | value | string | String content of the argument with all delimiters stripped; `"foo"` for `--foo` |
-| prefix | string&nbsp;\|&nbsp;null | Prefix delimiter, if present; `"--"` for `--foo` |
-| prefixType | string&nbsp;\|&nbsp;null | Either `"unix"` or `"windows"` depending on whether the delimiter was a `-` dash or `/` slash |
 | suffix | string&nbsp;\|&nbsp;null | Suffix delimiter, if present; `"="` for `--foo="bar"` |
+| prefix | string&nbsp;\|&nbsp;null | Prefix delimiter, if present; `"--"` for `--foo` |
+| isAfterTerminator | boolean | Whether this argument came after the terminator |
 | isExecutable | boolean | Whether this argument is the executable (the first item); true for `mkdir` in the command `mkdir -p /some/path`, false for the rest of the items |
-| isOption | boolean | Whether this argument is an option; true for `-f` or `--foo`, false for `foo` |
 | isLongOption | boolean | Whether this argument's option is a double hyphens; false for `-f`, true for `--foo` |
+| isOption | boolean | Whether this argument is an option; true for `-f` or `--foo`, false for `foo` |
 | isPaired | boolean | Whether this argument pairs with the next argument as its value; for `--foo="bar"`, the `foo` item pairs with the `bar` item that comes directly after it |
 | isTerminator | boolean | Whether this is the `"--"` terminator argument—[see the syntax conventions section on Argon's readme page](https://github.com/msikma/argon#syntax-conventions) |
 | isUnpacked | boolean | Whether this argument is a split up combination argument; an argument like `-asdf` becomes `-a`, `-s`, `-d`, `-f` |
-| afterTerminator | boolean | Whether this argument came after the terminator |
 | originalValue | string | The original string that made up the argument, before any processing was done |
 
 The `value` string will be stripped of whitespace *except if the argument was quoted*, in which case the whitespace will be maintained. So if the following string is parsed:

@@ -1,6 +1,6 @@
 {
   "name": "cmd-tokenize",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Library for converting terminal command strings into an easy to process format",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,6 @@
     "readme.md"
   ],
   "keywords": [
-    "prop-types",
     "validation"
   ],
   "homepage": "https://github.com/msikma/cmd-tokenize",
@@ -23,5 +22,7 @@
   "license": "MIT",
   "devDependencies": {
     "jest": "^27.0.6"
+  },
+  "dependencies": {
   }
 }
