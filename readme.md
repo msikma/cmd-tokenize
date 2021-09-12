@@ -39,9 +39,10 @@ console.log(parsed)
 //       isExecutable: true,
 //       isLongOption: false,
 //       isOption: false,
-//       isPaired: false,
 //       isTerminator: false,
 //       isUnpacked: false,
+//       isKey: false,
+//       isValue: false,
 //       originalValue: 'program'
 //     },
 //     ...
@@ -97,9 +98,10 @@ After parsing, each argument will have the following metadata:
 | isExecutable | boolean | Whether this argument is the executable (the first item); true for `mkdir` in the command `mkdir -p /some/path`, false for the rest of the items |
 | isLongOption | boolean | Whether this argument's option is a double hyphens; false for `-f`, true for `--foo` |
 | isOption | boolean | Whether this argument is an option; true for `-f` or `--foo`, false for `foo` |
-| isPaired | boolean | Whether this argument pairs with the next argument as its value; for `--foo="bar"`, the `foo` item pairs with the `bar` item that comes directly after it |
 | isTerminator | boolean | Whether this is the `"--"` terminator argument—[see the syntax conventions section on Argon's readme page](https://github.com/msikma/argon#syntax-conventions) |
 | isUnpacked | boolean | Whether this argument is a split up combination argument; an argument like `-asdf` becomes `-a`, `-s`, `-d`, `-f` |
+| isKey | boolean | Whether this argument is the key in a key-value pair; for `--foo="bar"`, the key item is `foo` |
+| isValue | boolean | Whether this argument is the value in a key-value pair; for `--foo="bar"`, the value item is `bar` |
 | originalValue | string | The original string that made up the argument, before any processing was done |
 
 The `value` string will be stripped of whitespace *except if the argument was quoted*, in which case the whitespace will be maintained. So if the following string is parsed:
