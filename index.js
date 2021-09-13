@@ -1,22 +1,27 @@
 // cmd-tokenize <https://github.com/msikma/cmd-tokenize>
 // © MIT license
 
-const { parseNestedQuotes } = require('./lib/split')
-const { reduceQuoteDepth, splitNestedQuotes, flattenNestedQuotes, combineEscapedSpaces } = require('./lib/split/quotes')
-const { unpackCombinedOptionsList } = require('./lib/arguments/meta')
 const { parseCommand, splitCommand, parseArguments, splitArguments } = require('./lib')
+const { addSlashes, removeSlashes } = require('./lib/escape/slashes')
+const { escapeArgument } = require('./lib/escape')
+const { parseArgument } = require('./lib/metadata/arguments')
+const { splitArgumentBlocks } = require('./lib/split')
+const { EscapeError, ParseError } = require('./lib/error')
 
 module.exports = {
   parseCommand,
   splitCommand,
   parseArguments,
   splitArguments,
+  exception: {
+    EscapeError,
+    ParseError
+  },
   util: {
-    reduceQuoteDepth,
-    combineEscapedSpaces,
-    flattenNestedQuotes,
-    parseNestedQuotes,
-    splitNestedQuotes,
-    unpackCombinedOptionsList
+    splitArgumentBlocks,
+    parseArgument,
+    escapeArgument,
+    addSlashes,
+    removeSlashes
   }
 }
