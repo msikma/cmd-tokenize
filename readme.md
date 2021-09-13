@@ -17,7 +17,7 @@ npm i --save cmd-tokenize
 The primary interface is `parseCommand()`, which takes a string of a terminal command and returns an object of parsed arguments.
 
 ```js
-const { parseCommand } = require('cmd-tokenize')
+import { parseCommand } from 'cmd-tokenize'
 
 const result = parseCommand(`exa -la --sort="size"`)
 console.log(result)
