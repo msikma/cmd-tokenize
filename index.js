@@ -5,7 +5,7 @@ const { parseCommand, splitCommand, parseArguments, splitArguments } = require('
 const { addSlashes, removeSlashes } = require('./lib/escape/slashes')
 const { escapeArgument } = require('./lib/escape')
 const { parseArgument } = require('./lib/metadata/arguments')
-const { splitArgumentBlocks } = require('./lib/split')
+const { splitArgumentSegments } = require('./lib/split')
 const { EscapeError, ParseError } = require('./lib/error')
 
 module.exports = {
@@ -18,7 +18,7 @@ module.exports = {
     ParseError
   },
   util: {
-    splitArgumentBlocks,
+    splitArgumentSegments,
     parseArgument,
     escapeArgument,
     addSlashes,

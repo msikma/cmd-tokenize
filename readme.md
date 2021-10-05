@@ -14,7 +14,7 @@ This library is available via npm:
 npm i --save cmd-tokenize
 ```
 
-The primary interface is `parseCommand()`, which takes a string of a terminal command and returns an object of parsed arguments.
+The primary interface is `parseCommand()`, which takes a string of a terminal command, or an `argv` array, and returns an object of parsed arguments.
 
 ```js
 import { parseCommand } from 'cmd-tokenize'
@@ -110,7 +110,7 @@ The `result` object will contain the following:
 }
 ```
 
-Arguments are split by whitespace, with quoted sections remaining preserved and being unescaped. Both Unix and Windows style delimiters (dash and slash) are supported.
+If a string is passed as input, it will be split by whitespace (with quoted sections remaining preserved) and unescaped. Both Unix and Windows style delimiters (dash and slash) are supported. An array can be passed as well, such as `parseCommand(process.argv.slice(1))`.
 
 Alternatively, there's `splitCommand()` which only splits the input into distinct arguments without doing any further processing; its output is equivalent to the `result.commandSplit` value returned by `parseCommand()`.
 
@@ -124,7 +124,7 @@ parseCommand(command[, { options }])
 
 **Parameters:**
 
-* `command` **string**\
+* `command` **string**&nbsp;\|&nbsp;**array&lt;string&gt;**\
   the command to parse
 * `options` **object** (optional)\
   a set of options used to change parsing behavior:
@@ -148,9 +148,9 @@ The `firstIsExec` option ensures that the first item is parsed correctly if it's
 **Throws:**
 
 * `ParseError`\
-  Indicates a problem with the given input string
+  Indicates a problem with the given input
 
-If the given input command contains an unterminated quote or a single trailing escape character, the parser will throw a `ParseError`. Also, if anything other than a string is passed as command, this error will be thrown.
+If a given input string contains an unterminated quote or a single trailing escape character, the parser will throw a `ParseError`. Also, if anything other than a string or array is passed as input, this error will be thrown.
 
 ***
 
@@ -160,7 +160,7 @@ If the given input command contains an unterminated quote or a single trailing e
 splitCommand(command[, { options }])
 ```
 
-This function takes the exact same arguments as `parseCommand()` (all functions have the same interface), but only returns the input command split up into distinct arguments. Quoted arguments have their whitespace preserved and unescape logic is applied. An options argument can be passed but the options have no effect.
+This function takes the exact same arguments as `parseCommand()` (all functions have the same interface), but only returns the input command split up into distinct arguments. Quoted arguments have their whitespace preserved and unescape logic is applied. An options argument can be passed but the options have no effect. If an array is passed, it is always returned verbatim.
 
 ***
 
